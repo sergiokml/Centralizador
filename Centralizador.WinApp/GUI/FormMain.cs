@@ -986,7 +986,7 @@ namespace Centralizador.WinApp.GUI
             DialogResult resp;
             while (!new FileSii().ExistsFile)
             {
-                resp = MessageBox.Show($"The file '{@"\Centralizador\"}{FileSii.PathExcelFileSii}' NOT found, please download...", Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                resp = MessageBox.Show($"The file '{FileSii.PathExcelFileSii}' NOT found, please download...", Application.ProductName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                 if (resp == DialogResult.OK)
                 {
                     Process.Start("https://palena.sii.cl/cvc_cgi/dte/ce_consulta_rut");

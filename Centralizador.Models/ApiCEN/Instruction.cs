@@ -82,7 +82,7 @@ namespace Centralizador.Models.ApiCEN
             {
                 using (CustomWebClient wc = new CustomWebClient())
                 {
-                    Uri uri = new Uri(Properties.Settings.Default.UrlCen, $"api/v1/resources/instructions/?payment_matrix={matrix.Id}&creditor={Userparticipant.Id}&status=Publicado");
+                    Uri uri = new Uri(Properties.Settings.Default.UrlCen, $"api/v1/resources/instructions/?payment_matrix={matrix.Id}&creditor={Userparticipant.Id}&status=Publicado&limit=300");
                     wc.Headers[HttpRequestHeader.ContentType] = "application/json";
                     string res = await wc.DownloadStringTaskAsync(uri);
                     if (res != null)

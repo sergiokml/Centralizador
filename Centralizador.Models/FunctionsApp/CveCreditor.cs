@@ -225,7 +225,7 @@ namespace Centralizador.Models.FunctionsApp
                 }
                 else
                 {
-                    StringLogging.AppendLine($"{item.Instruction.Id}\tUpdate email\t\tError in CSV file.");
+                    StringLogging.AppendLine($"{item.Nro}-{item.Instruction.Id}\tUpdate email\t\tNo encontrado en CSV file.");
                     continue;
                 }
                 Auxiliar aux = await Auxiliar.GetAuxiliarAsync(item.Instruction, Conn);

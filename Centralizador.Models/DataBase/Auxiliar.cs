@@ -46,10 +46,10 @@ namespace Centralizador.Models.DataBase
                 await Acteco.InsertActecoAsync(acteco, conexion);
 
                 // Production:
-                if (Environment.MachineName == "DEVELOPER")
-                {
-                    time = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                }
+                //if (Environment.MachineName == "DEVELOPER")
+                //{
+                //    time = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                //}
             }
             try
             {
@@ -133,7 +133,7 @@ namespace Centralizador.Models.DataBase
             string acteco = null;
             CultureInfo cultureInfo = CultureInfo.GetCultureInfo("es-CL");
             TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
-            string time = string.Format(cultureInfo, "{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
+            string time = string.Format(CultureInfo.InvariantCulture, "{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
             string adressTemp = ti.ToTitleCase(instruction.ParticipantDebtor.CommercialAddress.ToLower());
             if (instruction.ParticipantDebtor.CommercialAddress.Contains(','))
             {
@@ -170,10 +170,10 @@ namespace Centralizador.Models.DataBase
             }
 
             // Production:
-            if (Environment.MachineName == "DEVELOPER")
-            {
-                time = string.Format(cultureInfo, "{0:g}", DateTime.Now);
-            }
+            //if (Environment.MachineName == "DEVELOPER")
+            //{
+            //    time = string.Format(cultureInfo, "{0:g}", DateTime.Now);
+            //}
 
             try
             {

@@ -120,17 +120,17 @@ namespace Centralizador.Models.DataBase
 
                 string date;
                 string now;
-                if (Environment.MachineName == "DEVELOPER")
-                {
-                    // Developer
-                    now = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                    date = instruction.PaymentMatrix.PublishDate.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
-                }
-                else
-                {
+                //if (Environment.MachineName == "DEVELOPER")
+                //{
+                //    // Developer
+                //    now = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                //    date = instruction.PaymentMatrix.PublishDate.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+                //}
+                //else
+                //{
                     now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                     date = instruction.PaymentMatrix.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-                }
+                //}
 
                 int neto = instruction.Amount;
                 double iva = neto * 0.19;
