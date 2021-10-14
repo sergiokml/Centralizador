@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ConfigurationFileIP" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">DESKTOP-7LUU0MK</Value>
+      <Value Profile="(Default)">WINDEV2108EVAL</Value>
     </Setting>
   </Settings>
 </SettingsFile>

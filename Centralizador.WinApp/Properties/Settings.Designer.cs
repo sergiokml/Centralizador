@@ -25,7 +25,7 @@ namespace Centralizador.WinApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DESKTOP-7LUU0MK")]
+        [global::System.Configuration.DefaultSettingValueAttribute("WINDEV2108EVAL")]
         public string ConfigurationFileIP {
             get {
                 return ((string)(this["ConfigurationFileIP"]));

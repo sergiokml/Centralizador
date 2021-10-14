@@ -102,16 +102,16 @@ namespace Centralizador.Models.DataBase
                 DataTable dataTable = new DataTable();
                 int monto = 0;
                 string date = null;
-                if (Environment.MachineName == "DEVELOPER")
-                {
-                    // Developer
-                    date = instruction.PaymentMatrix.PublishDate.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    date = instruction.PaymentMatrix.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-                }
-
+                //if (Environment.MachineName == "DEVELOPER")
+                //{
+                //    // Developer
+                //    date = instruction.PaymentMatrix.PublishDate.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+                //}
+                //else
+                //{
+                //    date = instruction.PaymentMatrix.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                //}
+                date = instruction.PaymentMatrix.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
                 if (tipo == "NC")
                 {
                     monto = instruction.Amount * -1;

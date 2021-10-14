@@ -10,15 +10,15 @@ namespace Centralizador.Models.DataBase
     {
         public Conexion(string dataBaseName)
         {
-            string serverName;
-            if (Environment.MachineName == "DEVELOPER")
-            {
-                serverName = "DEVELOPER";
-            }
-            else
-            {
-                serverName = Properties.Settings.Default.DBServer;
-            }
+            string serverName = Properties.Settings.Default.DBServer; 
+            //if (Environment.MachineName == "DEVELOPER")
+            //{
+            //    serverName = "DEVELOPER";
+            //}
+            //else
+            //{
+            //    serverName = Properties.Settings.Default.DBServer;
+            //}
             DBName = dataBaseName;
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
             {
