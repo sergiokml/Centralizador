@@ -25,7 +25,7 @@ namespace Centralizador.WinApp.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DESKTOP-R3D87O5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10.13.0.114")]
         public string ConfigurationFileIP {
             get {
                 return ((string)(this["ConfigurationFileIP"]));

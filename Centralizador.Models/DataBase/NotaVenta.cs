@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Centralizador.Models.ApiCEN;
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Text;
 using System.Threading.Tasks;
-
-using Centralizador.Models.ApiCEN;
 
 namespace Centralizador.Models.DataBase
 {
@@ -28,7 +28,7 @@ namespace Centralizador.Models.DataBase
                 }
                 else
                 {
-                    return 1; // FOR NEW COMPANIES.
+                    return 1; // FOR NEW COMPANIES OR ERROR.
                 }
             }
             catch (Exception)
@@ -128,8 +128,8 @@ namespace Centralizador.Models.DataBase
                 //}
                 //else
                 //{
-                    now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                    date = instruction.PaymentMatrix.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                date = instruction.PaymentMatrix.PublishDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
                 //}
 
                 int neto = instruction.Amount;

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ConfigurationFileIP" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">DESKTOP-R3D87O5</Value>
+      <Value Profile="(Default)">10.13.0.114</Value>
     </Setting>
   </Settings>
 </SettingsFile>
