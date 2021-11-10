@@ -146,11 +146,17 @@ namespace Centralizador.Models.DataBase
                     rut = instruction.ParticipantDebtor.Rut;
                 }
 
-                string solicitadoPor = instruction.PaymentMatrix.NaturalKey.Remove(0, 4);
+                //Cambio de Campo insert NV (para evitar mostrar <Contacto>[BP__][Ago21][L][V01]</Contacto>
+                //10-11-2021
+                //SolicitadoPor => DespachadoPor
+                //sql_insert_Trigger
+
+
+                string DespachadoPor = instruction.PaymentMatrix.NaturalKey.Remove(0, 4);
                 query1.Append("INSERT INTO softland.nw_nventa (CodAux,CveCod,NomCon,nvFeEnt,nvFem,NVNumero,nvObser,VenCod,nvSubTotal, ");
-                query1.Append("nvNetoAfecto,nvNetoExento,nvMonto,proceso,nvEquiv,CodMon,nvEstado,FechaHoraCreacion, CodlugarDesp, SolicitadoPor) values ( ");
+                query1.Append("nvNetoAfecto,nvNetoExento,nvMonto,proceso,nvEquiv,CodMon,nvEstado,FechaHoraCreacion, CodlugarDesp, DespachadoPor) values ( ");
                 query1.Append($"'{rut}','1','.','{date}','{date}',{folioNV}, '{concepto}', '1',{neto},{neto},0,{total.ToString(CultureInfo.InvariantCulture)}, ");
-                query1.Append($"'Centralizador',1,'01','A','{now}','{instruction.PaymentMatrix.ReferenceCode}', '{solicitadoPor}') ");
+                query1.Append($"'Centralizador',1,'01','A','{now}','{instruction.PaymentMatrix.ReferenceCode}', '{DespachadoPor}') ");
 
                 query2.Append("INSERT INTO softland.nw_detnv (NVNumero,nvLinea,nvFecCompr,CodProd,nvCant,nvPrecio,nvSubTotal,nvTotLinea,CodUMed,CantUVta,nvEquiv)VALUES(");
                 query2.Append($"{folioNV},1,'{date}','{codProd}',1,{neto},{neto},{neto},'UN',1,1)");

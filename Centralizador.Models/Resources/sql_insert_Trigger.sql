@@ -44,7 +44,7 @@ BEGIN
 			)
 
 	SELECT @RazonRef = ''SEN_'' + (
-			SELECT TOP (1) nv.SolicitadoPor
+			SELECT TOP (1) nv.DespachadoPor
 			FROM softland.iw_gsaen_refdte n
 			JOIN softland.iw_gsaen g ON g.nroint = n.nroint
 				AND n.tipo = g.tipo
