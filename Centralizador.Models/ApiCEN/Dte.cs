@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Centralizador.Models.ApiSII;
+
+using Newtonsoft.Json;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-
-using Centralizador.Models.ApiSII;
-
-using Newtonsoft.Json;
 
 using static Centralizador.Models.Helpers.HFlagValidator;
 
@@ -82,7 +82,7 @@ namespace Centralizador.Models.ApiCEN
         {
             string fileName = detalle.Folio + "_" + detalle.Instruction.Id;
             string idFile = await SendFileAsync(tokenCen, fileName, doc);
-            if (!string.IsNullOrEmpty(idFile))
+            if (!string.IsNullOrEmpty(idFile) && doc != null)
             {
                 ResultDte dte = new ResultDte
                 {

@@ -1,4 +1,11 @@
-﻿using System;
+﻿using Centralizador.Models.ApiCEN;
+using Centralizador.Models.ApiSII;
+using Centralizador.Models.DataBase;
+using Centralizador.Models.Helpers;
+
+using OpenHtmlToPdf;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,13 +15,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-
-using Centralizador.Models.ApiCEN;
-using Centralizador.Models.ApiSII;
-using Centralizador.Models.DataBase;
-using Centralizador.Models.Helpers;
-
-using OpenHtmlToPdf;
 
 using static Centralizador.Models.Helpers.HEnum;
 using static Centralizador.Models.Helpers.HFlagValidator;
@@ -296,7 +296,7 @@ namespace Centralizador.Models.FunctionsApp
         {
             StringLogging.Clear();
             // GET VALUES LIST FROM CSV.
-           await FileSii.ReadFileSii();
+            await FileSii.ReadFileSii();
             FoliosNv = await InsertNv(detalles);
             if (FoliosNv != null && FoliosNv.Count > 0)
             {
@@ -333,6 +333,11 @@ namespace Centralizador.Models.FunctionsApp
             {
                 try
                 {
+                    //if (instruction.Id == 3281116)
+                    //{
+                    //    System.Windows.Forms.MessageBox.Show("Test");
+                    //}
+
                     // GET PARTICIPANT DEBTOR
                     instruction.ParticipantDebtor = await Participant.GetParticipantByIdAsync(instruction.Debtor);
                     //REEMPLAZOS
@@ -387,7 +392,7 @@ namespace Centralizador.Models.FunctionsApp
                             detalle.MntNeto = infoLastF.NetoAfecto;
                             detalle.MntIva = infoLastF.IVA;
                             detalle.MntTotal = infoLastF.Total;
-                            // GET INFO FROM SII                           
+                            // GET INFO FROM SII
                             DataEvento evento = await dataEvento.GetStatusDteAsync("Creditor", TokenSii, "33", detalle, UserParticipant);
                             if (evento != null)
                             {
@@ -395,14 +400,23 @@ namespace Centralizador.Models.FunctionsApp
                                 detalle.StatusDetalle = GetStatus(detalle);
                                 detalle.FechaRecepcion = infoLastF.FechaEnvioSII.ToString("dd-MM-yyyy");
                             }
+                            else
+                            {
+                                detalle.StatusDetalle = GetStatus(detalle);
+                                //detalle.FechaRecepcion = infoLastF.FechaEnvioSII.ToString("dd-MM-yyyy");
+                            }
                         }
                         ////todo ESPECIAL PARA ELIMINAR EL DTE Y VOLVER A CARGARLO
-                        //if (detalle.StatusDetalle == StatusDetalle.Accepted && detalle.Instruction != null && detalle.Instruction.StatusBilled == Instruction.StatusBilled.Facturado)
+                        //if (detalle.StatusDetalle == StatusDetalle.Accepted && detalle.Instruction != null && (detalle.Instruction.StatusBilled == Instruction.StatusBilled.Facturado || detalle.Instruction.StatusBilled == Instruction.StatusBilled.ConRetraso))
                         //{
                         //    //! eliminar el DTE
-                        //    var dte = await Dte.GetDteAsync(detalle, true);
-                        //    var res = await Dte.DeleteDte(dte, TokenCen);
-                        //    detalle.Instruction.StatusBilled = Instruction.StatusBilled.NoFacturado;
+                        //    ResultDte dte = await Dte.GetDteAsync(detalle, true);
+                        //    if (dte != null)
+                        //    {
+                        //        ResultDte res = await Dte.DeleteDte(dte, TokenCen);
+
+                        //        detalle.Instruction.StatusBilled = Instruction.StatusBilled.NoFacturado;
+                        //    }
                         //}
 
                         // SEND DTE TO CEN.
@@ -410,13 +424,13 @@ namespace Centralizador.Models.FunctionsApp
                         {
                             XmlDocument xmlDoc = new XmlDocument();
                             xmlDoc.LoadXml(detalle.DTEFile);
-                            xmlDoc.DocumentElement.SetAttribute("xmlns", "http://www.sii.cl/SiiDte");
+                            //xmlDoc.DocumentElement.SetAttribute("xmlns", "http://www.sii.cl/SiiDte");
                             StringWriter sw = new StringWriter();
                             XmlTextWriter xw = new XmlTextWriter(sw)
                             {
                                 Formatting = Formatting.Indented
                             };
-                            //xmlDoc.WriteTo(xw);
+                            xmlDoc.WriteTo(xw);
 
                             //XDocument xml = XDocument.Parse(detalle.DTEFile);
                             //xml.docu.SetAttributeValue("","") ;
@@ -441,8 +455,9 @@ namespace Centralizador.Models.FunctionsApp
                     await ReportProgress(porcent, $"Processing 'Pay Instructions' {instruction.Id}-{instruction.PaymentMatrix.PublishDate:dd-MM-yyyy}, wait please.  ({c}/{list.Count})");
                     return detalles;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    string msg = ex.Message;
                     return null;
                     throw;
                 }

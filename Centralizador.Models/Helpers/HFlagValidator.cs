@@ -198,6 +198,10 @@ namespace Centralizador.Models.Helpers
 
         public static StatusDetalle GetStatus(Detalle detalle)
         {
+            if (detalle.DataEvento == null)
+            {
+                return StatusDetalle.Pending;
+            }
             // http://www.sii.cl/factura_electronica/Webservice_Registro_Reclamo_DTE_V1.2.pdf
             if (detalle.DataEvento != null && detalle.DataEvento.ListEvenHistDoc != null && detalle.DataEvento.ListEvenHistDoc.Count > 0)
             {

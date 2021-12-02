@@ -149,7 +149,7 @@ namespace Centralizador.Models.DataBase
                 //Cambio de Campo insert NV (para evitar mostrar <Contacto>[BP__][Ago21][L][V01]</Contacto>
                 //10-11-2021
                 //SolicitadoPor => DespachadoPor
-                //sql_insert_Trigger
+                //sql_insert_Trigger cambio también!!!! ojo!!!! (eliminar o editar los TR ya instalados en la BD)
 
 
                 string DespachadoPor = instruction.PaymentMatrix.NaturalKey.Remove(0, 4);
@@ -164,6 +164,7 @@ namespace Centralizador.Models.DataBase
                 query3.Append("INSERT INTO softland.NW_Impto (nvNumero, CodImpto, ValPctIni, AfectoImpto, Impto)  VALUES ( ");
                 query3.Append($"{folioNV},'IVA',19,{neto},{iva.ToString(CultureInfo.InvariantCulture)})");
 
+                string xx = query2.ToString();
                 // Execute Transaction
                 if (!string.IsNullOrEmpty(query1.ToString()) || !string.IsNullOrEmpty(query2.ToString()) || !string.IsNullOrEmpty(query3.ToString()))
                 {

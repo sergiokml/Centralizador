@@ -39,13 +39,17 @@ namespace Centralizador.Models.ApiSII
         {
             wc = new HttpClient(new HttpClientHandler { UseCookies = false });
             Token = token;
-            var uri = new Uri("https://www4.sii.cl/registrorechazodtej6ui/services/data/facadeService/validarAccesoReceptor");
+            Uri uri = new Uri("https://www4.sii.cl/registrorechazodtej6ui/services/data/facadeService/validarAccesoReceptor");
             wc.BaseAddress = uri;
             //  Client.DefaultRequestHeaders.Add("Cookie", $"TOKEN={Token}");
         }
 
         public async Task<DataEvento> GetStatusDteAsync(string tipoUser, string token, string tipoDoc, Detalle detalle, ResultParticipant userParticipant)
         {
+            //if (detalle.Folio == 6183)
+            //{
+            //    System.Windows.Forms.MessageBox.Show("Test");
+            //}
             string rutToken;
             rutToken = RutToken.Substring(RutToken.IndexOf('=') + 1, 10);
             MetaData metaData = new MetaData
@@ -97,11 +101,11 @@ namespace Centralizador.Models.ApiSII
             }
             catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError || ex.Status == WebExceptionStatus.ReceiveFailure)
             {
-                throw;
+                return null;
             }
             catch (Exception)
             {
-                throw;
+                return null;
             }
             return null;
         }

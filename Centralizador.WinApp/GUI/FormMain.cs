@@ -1,7 +1,15 @@
-﻿using System;
+﻿using Centralizador.Models;
+using Centralizador.Models.ApiCEN;
+using Centralizador.Models.ApiSII;
+using Centralizador.Models.DataBase;
+using Centralizador.Models.FunctionsApp;
+using Centralizador.Models.Helpers;
+using Centralizador.Models.Outlook.MailKit;
+using Centralizador.Models.registroreclamodteservice;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -12,16 +20,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using Centralizador.Models;
-using Centralizador.Models.ApiCEN;
-using Centralizador.Models.ApiSII;
-
-using Centralizador.Models.DataBase;
-using Centralizador.Models.FunctionsApp;
-using Centralizador.Models.Helpers;
-using Centralizador.Models.Outlook.MailKit;
-using Centralizador.Models.registroreclamodteservice;
 
 using TenTec.Windows.iGridLib;
 
@@ -139,7 +137,7 @@ namespace Centralizador.WinApp.GUI
             // cveCreditor = new CveCreditor();
 
             // VERSION
-            var architecture = RuntimeInformation.ProcessArchitecture;
+            Architecture architecture = RuntimeInformation.ProcessArchitecture;
             Version ver = Assembly.GetExecutingAssembly().GetName().Version;
             if (Environment.Is64BitProcess)
             {
