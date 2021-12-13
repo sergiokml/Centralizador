@@ -35,7 +35,7 @@ namespace Centralizador.Models.DataBase
                 List<DteFiles> lista = new List<DteFiles>();
                 DataTable dataTable;
 
-                query.Append("SELECT TOP 2 ID_Archivo ");
+                query.Append("SELECT TOP 3 ID_Archivo ");
                 query.Append("        ,Extension ");
                 query.Append("        ,Archivo ");
                 query.Append("        ,FechaGenDTE ");
@@ -43,6 +43,7 @@ namespace Centralizador.Models.DataBase
                 query.Append("FROM softland.DTE_Archivos ");
                 query.Append("WHERE Tipo = 'F' ");
                 query.Append($"        AND Nroint = {nroInt} ");
+                query.Append($"        AND TipoDTE = 33 ");
                 query.Append($"        AND Folio = {Folio} ORDER BY FechaGenDTE DESC  ");
                 conexion.Query = query.ToString();
                 dataTable = await Conexion.ExecuteReaderAsync(conexion);
