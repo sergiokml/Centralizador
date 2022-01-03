@@ -151,12 +151,13 @@ namespace Centralizador.Models.DataBase
                 //SolicitadoPor => DespachadoPor
                 //sql_insert_Trigger cambio también!!!! ojo!!!! (eliminar o editar los TR ya instalados en la BD)
 
-
+                //26-12-2021
+                // Se agrega nuevo campo para controlar ID de Instruccion 'SolicitadoPor'
                 string DespachadoPor = instruction.PaymentMatrix.NaturalKey.Remove(0, 4);
                 query1.Append("INSERT INTO softland.nw_nventa (CodAux,CveCod,NomCon,nvFeEnt,nvFem,NVNumero,nvObser,VenCod,nvSubTotal, ");
-                query1.Append("nvNetoAfecto,nvNetoExento,nvMonto,proceso,nvEquiv,CodMon,nvEstado,FechaHoraCreacion, CodlugarDesp, DespachadoPor) values ( ");
+                query1.Append("nvNetoAfecto,nvNetoExento,nvMonto,proceso,nvEquiv,CodMon,nvEstado,FechaHoraCreacion, CodlugarDesp, DespachadoPor, SolicitadoPor) values ( ");
                 query1.Append($"'{rut}','1','.','{date}','{date}',{folioNV}, '{concepto}', '1',{neto},{neto},0,{total.ToString(CultureInfo.InvariantCulture)}, ");
-                query1.Append($"'Centralizador',1,'01','A','{now}','{instruction.PaymentMatrix.ReferenceCode}', '{DespachadoPor}') ");
+                query1.Append($"'Centralizador',1,'01','A','{now}','{instruction.PaymentMatrix.ReferenceCode}', '{DespachadoPor}', '{instruction.Id}') ");
 
                 query2.Append("INSERT INTO softland.nw_detnv (NVNumero,nvLinea,nvFecCompr,CodProd,nvCant,nvPrecio,nvSubTotal,nvTotLinea,CodUMed,CantUVta,nvEquiv)VALUES(");
                 query2.Append($"{folioNV},1,'{date}','{codProd}',1,{neto},{neto},{neto},'UN',1,1)");
