@@ -54,7 +54,7 @@ namespace Centralizador.Models.Properties
             //   \\DESKTOP-7LUU0MK\Centralizador
 
             //   SRV-SOFTLAND
-            var a = System.IO.Directory.GetCurrentDirectory() + @"\Centralizador.exe.config";
+            string a = System.IO.Directory.GetCurrentDirectory() + @"\Centralizador.exe.config";
             XDocument docconfigApp = XDocument.Load(a);
             IPServer = @"\\" + docconfigApp
                 .Root
@@ -79,7 +79,7 @@ namespace Centralizador.Models.Properties
             try
             {
                 // LOAD THE XML CONFIG
-                var pp = IPServer + @"Centralizador_config.xml";
+                string pp = IPServer + @"Centralizador_config.xml";
                 XDocument doc = XDocument.Load(pp);
 
                 // SOFTLAND DB
@@ -98,7 +98,7 @@ namespace Centralizador.Models.Properties
                 Password365 = doc.Root.Element("Outlook365").Element("Password365").Value;
                 UserCC365 = doc.Root.Element("Outlook365").Element("UserCC365").Value;
                 UIDRange = doc.Root.Element("ServidorCorreos").Element("UIDRange").Value;
-                var fecha = doc.Root.Element("ServidorCorreos").Element("DateTimeEmail").Value;
+                string fecha = doc.Root.Element("ServidorCorreos").Element("DateTimeEmail").Value;
                 DateTimeEmail = DateTime.ParseExact(fecha, "dd-MM-yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("es-CL"));
                 //DateTimeEmail = Convert.ToDateTime(fecha, CultureInfo.InvariantCulture);
 

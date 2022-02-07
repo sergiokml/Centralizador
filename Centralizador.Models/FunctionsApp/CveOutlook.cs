@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-
-using Centralizador.Models.ApiCEN;
+﻿using Centralizador.Models.ApiCEN;
 using Centralizador.Models.ApiSII;
 using Centralizador.Models.DataBase;
 using Centralizador.Models.Helpers;
@@ -19,6 +9,16 @@ using MailKit.Net.Imap;
 using MailKit.Search;
 
 using MimeKit;
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
 using static Centralizador.Models.Helpers.HEnum;
 
@@ -196,12 +196,13 @@ namespace Centralizador.Models.FunctionsApp
                 {
                     await client.ConnectAsync("outlook.office365.com", 993, true);
                     await ReportProgress(0, $"Authenticating on mail server... Please wait.");
+                    client.AuthenticationMechanisms.Remove("NTLM");
                     await client.AuthenticateAsync(Properties.Settings.Default.User365, Properties.Settings.Default.Password365);
 
                     IList<IMailFolder> folders = await client.GetFoldersAsync(client.PersonalNamespaces[0]);
                     foreach (IMailFolder f in folders)
                     {
-                        var x = f.FullName;
+                        string x = f.FullName;
                         if (f.Name == "INBOX" || f.Name == "Correo no deseado" || f.Name == "Junk Email Vade Secure")
                         {
                             await f.OpenAsync(FolderAccess.ReadOnly);
