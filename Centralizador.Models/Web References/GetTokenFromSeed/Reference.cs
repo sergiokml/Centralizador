@@ -14,12 +14,12 @@
 #pragma warning disable 1591
 
 namespace Centralizador.Models.GetTokenFromSeed {
-    using System;
-    using System.Web.Services;
     using System.Diagnostics;
-    using System.Web.Services.Protocols;
+    using System;
     using System.Xml.Serialization;
     using System.ComponentModel;
+    using System.Web.Services.Protocols;
+    using System.Web.Services;
     
     
     /// <remarks/>
@@ -29,13 +29,13 @@ namespace Centralizador.Models.GetTokenFromSeed {
     [System.Web.Services.WebServiceBindingAttribute(Name="GetTokenFromSeedSoapBinding", Namespace="http://DefaultNamespace")]
     public partial class GetTokenFromSeedService : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback getTokenOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback getVersionPatchOperationCompleted;
-        
         private System.Threading.SendOrPostCallback getVersionMayorOperationCompleted;
         
         private System.Threading.SendOrPostCallback getVersionMenorOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback getVersionPatchOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback getTokenOperationCompleted;
         
         private System.Threading.SendOrPostCallback getStateOperationCompleted;
         
@@ -78,77 +78,19 @@ namespace Centralizador.Models.GetTokenFromSeed {
         }
         
         /// <remarks/>
-        public event getTokenCompletedEventHandler getTokenCompleted;
-        
-        /// <remarks/>
-        public event getVersionPatchCompletedEventHandler getVersionPatchCompleted;
-        
-        /// <remarks/>
         public event getVersionMayorCompletedEventHandler getVersionMayorCompleted;
         
         /// <remarks/>
         public event getVersionMenorCompletedEventHandler getVersionMenorCompleted;
         
         /// <remarks/>
+        public event getVersionPatchCompletedEventHandler getVersionPatchCompleted;
+        
+        /// <remarks/>
+        public event getTokenCompletedEventHandler getTokenCompleted;
+        
+        /// <remarks/>
         public event getStateCompletedEventHandler getStateCompleted;
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://DefaultNamespace", ResponseNamespace="http://DefaultNamespace")]
-        [return: System.Xml.Serialization.SoapElementAttribute("getTokenReturn")]
-        public string getToken(string pszXml) {
-            object[] results = this.Invoke("getToken", new object[] {
-                        pszXml});
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void getTokenAsync(string pszXml) {
-            this.getTokenAsync(pszXml, null);
-        }
-        
-        /// <remarks/>
-        public void getTokenAsync(string pszXml, object userState) {
-            if ((this.getTokenOperationCompleted == null)) {
-                this.getTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OngetTokenOperationCompleted);
-            }
-            this.InvokeAsync("getToken", new object[] {
-                        pszXml}, this.getTokenOperationCompleted, userState);
-        }
-        
-        private void OngetTokenOperationCompleted(object arg) {
-            if ((this.getTokenCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.getTokenCompleted(this, new getTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://DefaultNamespace", ResponseNamespace="http://DefaultNamespace")]
-        [return: System.Xml.Serialization.SoapElementAttribute("getVersionPatchReturn")]
-        public string getVersionPatch() {
-            object[] results = this.Invoke("getVersionPatch", new object[0]);
-            return ((string)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void getVersionPatchAsync() {
-            this.getVersionPatchAsync(null);
-        }
-        
-        /// <remarks/>
-        public void getVersionPatchAsync(object userState) {
-            if ((this.getVersionPatchOperationCompleted == null)) {
-                this.getVersionPatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OngetVersionPatchOperationCompleted);
-            }
-            this.InvokeAsync("getVersionPatch", new object[0], this.getVersionPatchOperationCompleted, userState);
-        }
-        
-        private void OngetVersionPatchOperationCompleted(object arg) {
-            if ((this.getVersionPatchCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.getVersionPatchCompleted(this, new getVersionPatchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://DefaultNamespace", ResponseNamespace="http://DefaultNamespace")]
@@ -208,6 +150,64 @@ namespace Centralizador.Models.GetTokenFromSeed {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://DefaultNamespace", ResponseNamespace="http://DefaultNamespace")]
+        [return: System.Xml.Serialization.SoapElementAttribute("getVersionPatchReturn")]
+        public string getVersionPatch() {
+            object[] results = this.Invoke("getVersionPatch", new object[0]);
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void getVersionPatchAsync() {
+            this.getVersionPatchAsync(null);
+        }
+        
+        /// <remarks/>
+        public void getVersionPatchAsync(object userState) {
+            if ((this.getVersionPatchOperationCompleted == null)) {
+                this.getVersionPatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OngetVersionPatchOperationCompleted);
+            }
+            this.InvokeAsync("getVersionPatch", new object[0], this.getVersionPatchOperationCompleted, userState);
+        }
+        
+        private void OngetVersionPatchOperationCompleted(object arg) {
+            if ((this.getVersionPatchCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.getVersionPatchCompleted(this, new getVersionPatchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://DefaultNamespace", ResponseNamespace="http://DefaultNamespace")]
+        [return: System.Xml.Serialization.SoapElementAttribute("getTokenReturn")]
+        public string getToken(string pszXml) {
+            object[] results = this.Invoke("getToken", new object[] {
+                        pszXml});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void getTokenAsync(string pszXml) {
+            this.getTokenAsync(pszXml, null);
+        }
+        
+        /// <remarks/>
+        public void getTokenAsync(string pszXml, object userState) {
+            if ((this.getTokenOperationCompleted == null)) {
+                this.getTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OngetTokenOperationCompleted);
+            }
+            this.InvokeAsync("getToken", new object[] {
+                        pszXml}, this.getTokenOperationCompleted, userState);
+        }
+        
+        private void OngetTokenOperationCompleted(object arg) {
+            if ((this.getTokenCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.getTokenCompleted(this, new getTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapRpcMethodAttribute("", RequestNamespace="http://DefaultNamespace", ResponseNamespace="http://DefaultNamespace")]
         [return: System.Xml.Serialization.SoapElementAttribute("getStateReturn")]
         public string getState() {
             object[] results = this.Invoke("getState", new object[0]);
@@ -255,17 +255,43 @@ namespace Centralizador.Models.GetTokenFromSeed {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void getTokenCompletedEventHandler(object sender, getTokenCompletedEventArgs e);
+    public delegate void getVersionMayorCompletedEventHandler(object sender, getVersionMayorCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class getTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class getVersionMayorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal getTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal getVersionMayorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void getVersionMenorCompletedEventHandler(object sender, getVersionMenorCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class getVersionMenorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal getVersionMenorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -307,43 +333,17 @@ namespace Centralizador.Models.GetTokenFromSeed {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void getVersionMayorCompletedEventHandler(object sender, getVersionMayorCompletedEventArgs e);
+    public delegate void getTokenCompletedEventHandler(object sender, getTokenCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class getVersionMayorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class getTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal getVersionMayorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void getVersionMenorCompletedEventHandler(object sender, getVersionMenorCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class getVersionMenorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal getVersionMenorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal getTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
