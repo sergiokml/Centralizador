@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:intf="http://DefaultNamespace" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:impl="http://DefaultNamespace" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://DefaultNamespace" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:impl="http://DefaultNamespace" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:intf="http://DefaultNamespace" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://DefaultNamespace" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types />
   <wsdl:message name="getSeedResponse">
     <wsdl:part name="getSeedReturn" type="xsd:string" />
@@ -23,27 +23,27 @@
   <wsdl:message name="getSeedRequest" />
   <wsdl:portType name="CrSeed">
     <wsdl:operation name="getVersionMayor">
-      <wsdl:input name="getVersionMayorRequest" message="impl:getVersionMayorRequest" />
-      <wsdl:output name="getVersionMayorResponse" message="impl:getVersionMayorResponse" />
+      <wsdl:input name="getVersionMayorRequest" message="intf:getVersionMayorRequest" />
+      <wsdl:output name="getVersionMayorResponse" message="intf:getVersionMayorResponse" />
     </wsdl:operation>
     <wsdl:operation name="getVersionMenor">
-      <wsdl:input name="getVersionMenorRequest" message="impl:getVersionMenorRequest" />
-      <wsdl:output name="getVersionMenorResponse" message="impl:getVersionMenorResponse" />
+      <wsdl:input name="getVersionMenorRequest" message="intf:getVersionMenorRequest" />
+      <wsdl:output name="getVersionMenorResponse" message="intf:getVersionMenorResponse" />
     </wsdl:operation>
     <wsdl:operation name="getVersionPatch">
-      <wsdl:input name="getVersionPatchRequest" message="impl:getVersionPatchRequest" />
-      <wsdl:output name="getVersionPatchResponse" message="impl:getVersionPatchResponse" />
+      <wsdl:input name="getVersionPatchRequest" message="intf:getVersionPatchRequest" />
+      <wsdl:output name="getVersionPatchResponse" message="intf:getVersionPatchResponse" />
     </wsdl:operation>
     <wsdl:operation name="getSeed">
-      <wsdl:input name="getSeedRequest" message="impl:getSeedRequest" />
-      <wsdl:output name="getSeedResponse" message="impl:getSeedResponse" />
+      <wsdl:input name="getSeedRequest" message="intf:getSeedRequest" />
+      <wsdl:output name="getSeedResponse" message="intf:getSeedResponse" />
     </wsdl:operation>
     <wsdl:operation name="getState">
-      <wsdl:input name="getStateRequest" message="impl:getStateRequest" />
-      <wsdl:output name="getStateResponse" message="impl:getStateResponse" />
+      <wsdl:input name="getStateRequest" message="intf:getStateRequest" />
+      <wsdl:output name="getStateResponse" message="intf:getStateResponse" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="CrSeedSoapBinding" type="impl:CrSeed">
+  <wsdl:binding name="CrSeedSoapBinding" type="intf:CrSeed">
     <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
     <wsdl:operation name="getVersionMayor">
       <wsdlsoap:operation soapAction="" />
@@ -92,7 +92,7 @@
     </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="CrSeedService">
-    <wsdl:port name="CrSeed" binding="impl:CrSeedSoapBinding">
+    <wsdl:port name="CrSeed" binding="intf:CrSeedSoapBinding">
       <wsdlsoap:address location="https://palena.sii.cl/DTEWS/CrSeed.jws" />
     </wsdl:port>
   </wsdl:service>

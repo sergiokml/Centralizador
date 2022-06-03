@@ -14,7 +14,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
 
 using static Centralizador.Models.Helpers.HEnum;
 using static Centralizador.Models.Helpers.HFlagValidator;
@@ -39,7 +38,13 @@ namespace Centralizador.Models.FunctionsApp
         public List<int> FoliosNv { get; set; }
         public bool IsRuning { get; set; }
 
-        public CveCreditor(ResultParticipant userParticipant, IProgress<HPgModel> progress, string dataBaseName, string tokenSii, string tokenCen)
+        public CveCreditor(
+            ResultParticipant userParticipant,
+            IProgress<HPgModel> progress,
+            string dataBaseName,
+            string tokenSii,
+            string tokenCen
+        )
         {
             DBName = dataBaseName;
             TokenCen = tokenCen;
@@ -54,7 +59,11 @@ namespace Centralizador.Models.FunctionsApp
         }
 
         // CTOR FOR NV INSERT.
-        public CveCreditor(string dataBaseName, IProgress<HPgModel> progress, ResultParticipant userParticipant)
+        public CveCreditor(
+            string dataBaseName,
+            IProgress<HPgModel> progress,
+            ResultParticipant userParticipant
+        )
         {
             Mode = TipoTask.Creditor;
             IsRuning = true;
@@ -67,20 +76,24 @@ namespace Centralizador.Models.FunctionsApp
 
         public Task ReportProgress(float p, string msg)
         {
-            return Task.Run(() =>
-            {
-                PgModel.PercentageComplete = (int)p;
-                PgModel.Msg = msg;
-                Progress.Report(PgModel);
-            });
+            return Task.Run(
+                () =>
+                {
+                    PgModel.PercentageComplete = (int)p;
+                    PgModel.Msg = msg;
+                    Progress.Report(PgModel);
+                }
+            );
         }
 
         public Task CancelTask()
         {
-            return Task.Run(() =>
-            {
-                Cancellation.Cancel();
-            });
+            return Task.Run(
+                () =>
+                {
+                    Cancellation.Cancel();
+                }
+            );
         }
 
         public async Task ConvertXmlToPdf(TipoTask task, List<Detalle> lista)
@@ -95,27 +108,43 @@ namespace Centralizador.Models.FunctionsApp
             new CreateFile($"{path}");
             try
             {
-                await Task.Run(() =>
-                {
-                    tareas = lista.Select(async item =>
+                await Task.Run(
+                    () =>
                     {
-                        if (item.DTEDef != null)
+                        tareas = lista
+                            .Select(
+                                async item =>
+                                {
+                                    if (item.DTEDef != null)
+                                    {
+                                        await HConvertToPdf
+                                            .EncodeTimbre417(item, task)
+                                            .ContinueWith(
+                                                async x =>
+                                                {
+                                                    await HConvertToPdf.XmlToPdf(item, path);
+                                                }
+                                            );
+                                    }
+                                    c++;
+                                    float porcent = (float)(100 * c) / lista.Count;
+                                    await ReportProgress(
+                                        porcent,
+                                        $"Converting doc N° [{item.Folio}] to PDF.    ({c}/{lista.Count})"
+                                    );
+                                    return pdfDocument;
+                                }
+                            )
+                            .ToList();
+                    }
+                );
+                await Task.WhenAll(tareas)
+                    .ContinueWith(
+                        x =>
                         {
-                            await HConvertToPdf.EncodeTimbre417(item, task).ContinueWith(async x =>
-                            {
-                                await HConvertToPdf.XmlToPdf(item, path);
-                            });
+                            Process.Start(path);
                         }
-                        c++;
-                        float porcent = (float)(100 * c) / lista.Count;
-                        await ReportProgress(porcent, $"Converting doc N° [{item.Folio}] to PDF.    ({c}/{lista.Count})");
-                        return pdfDocument;
-                    }).ToList();
-                });
-                await Task.WhenAll(tareas).ContinueWith(x =>
-                {
-                    Process.Start(path);
-                });
+                    );
             }
             catch (Exception)
             {
@@ -140,20 +169,25 @@ namespace Centralizador.Models.FunctionsApp
                 //new CreateFile($"{path}");
                 string path = Path.GetTempPath();
                 string nomenclatura = null;
-                await Task.Run(async () =>
-                {
-                    if (d.DTEDef != null)
-                    {
-                        await HConvertToPdf.EncodeTimbre417(d, task);
-                        nomenclatura = await HConvertToPdf.XmlToPdf(d, path);
-                    }
-                    return pdfDocument;
-                }).ContinueWith(x =>
-                {
-                    //string nomenclatura = d.Folio + "_" + ti.ToTitleCase(d.RznSocRecep.ToLower());
-                    //Process.Start(path + "\\" + nomenclatura + ".pdf");
-                    Process.Start(nomenclatura);
-                });
+                await Task.Run(
+                        async () =>
+                        {
+                            if (d.DTEDef != null)
+                            {
+                                await HConvertToPdf.EncodeTimbre417(d, task);
+                                nomenclatura = await HConvertToPdf.XmlToPdf(d, path);
+                            }
+                            return pdfDocument;
+                        }
+                    )
+                    .ContinueWith(
+                        x =>
+                        {
+                            //string nomenclatura = d.Folio + "_" + ti.ToTitleCase(d.RznSocRecep.ToLower());
+                            //Process.Start(path + "\\" + nomenclatura + ".pdf");
+                            Process.Start(nomenclatura);
+                        }
+                    );
             }
             catch (Exception)
             {
@@ -221,11 +255,14 @@ namespace Centralizador.Models.FunctionsApp
                     string name = ti.ToTitleCase(a.Name.ToLower());
                     item.Instruction.ParticipantDebtor.BusinessName = name;
                     item.Instruction.ParticipantDebtor.DteReceptionEmail = a.Email;
-                    item.Instruction.ParticipantDebtor.Name = item.Instruction.ParticipantDebtor.Name.ToUpper();
+                    item.Instruction.ParticipantDebtor.Name =
+                        item.Instruction.ParticipantDebtor.Name.ToUpper();
                 }
                 else
                 {
-                    StringLogging.AppendLine($"{item.Nro}-{item.Instruction.Id}\tUpdate email\t\tNo encontrado en CSV file.");
+                    StringLogging.AppendLine(
+                        $"{item.Nro}-{item.Instruction.Id}\tUpdate email\t\tNo encontrado en CSV file."
+                    );
                     continue;
                 }
                 Auxiliar aux = await Auxiliar.GetAuxiliarAsync(item.Instruction, Conn);
@@ -236,11 +273,15 @@ namespace Centralizador.Models.FunctionsApp
                     aux = await Auxiliar.InsertAuxiliarAsync(item.Instruction, Conn, comunaobj);
                     if (aux != null)
                     {
-                        StringLogging.AppendLine($"{item.Instruction.Id}\tAuxiliar Insert:\tOk: {item.Instruction.ParticipantDebtor.Rut} / {aux.DirAux} / {aux.ComAux}");
+                        StringLogging.AppendLine(
+                            $"{item.Instruction.Id}\tAuxiliar Insert:\tOk: {item.Instruction.ParticipantDebtor.Rut} / {aux.DirAux} / {aux.ComAux}"
+                        );
                     }
                     else
                     {
-                        StringLogging.AppendLine($"{item.Instruction.Id}\tAuxiliar Error:\t {item.Instruction.ParticipantDebtor.Rut}");
+                        StringLogging.AppendLine(
+                            $"{item.Instruction.Id}\tAuxiliar Error:\t {item.Instruction.ParticipantDebtor.Rut}"
+                        );
                     }
                 }
                 else // UPDATE ALL AUX FROM LIST.
@@ -255,14 +296,18 @@ namespace Centralizador.Models.FunctionsApp
                     }
                     if (await aux.UpdateAuxiliarAsync(item.Instruction, Conn, comunaobj) == 0)
                     {
-                        StringLogging
-                            .AppendLine($"{item.Instruction.Id}\tAuxiliar Update:\tError Sql: {item.Instruction.ParticipantDebtor.Rut}");
+                        StringLogging.AppendLine(
+                            $"{item.Instruction.Id}\tAuxiliar Update:\tError Sql: {item.Instruction.ParticipantDebtor.Rut}"
+                        );
                         continue;
                     }
                 }
                 // INSERT THE NV.
                 lastF = await NotaVenta.GetLastNv(Conn);
-                string prod = BilingTypes.FirstOrDefault(x => x.Id == item.Instruction.PaymentMatrix.BillingWindow.BillingType).DescriptionPrefix;
+                string prod =
+                    BilingTypes.FirstOrDefault(
+                        x => x.Id == item.Instruction.PaymentMatrix.BillingWindow.BillingType
+                    ).DescriptionPrefix;
                 resultInsertNV = await NotaVenta.InsertNvAsync(item.Instruction, lastF, prod, Conn);
                 if (resultInsertNV == 0)
                 {
@@ -272,17 +317,24 @@ namespace Centralizador.Models.FunctionsApp
                 {
                     if (item.Instruction.ParticipantNew == null)
                     {
-                        StringLogging.AppendLine($"{item.Nro}-{item.Instruction.Id}\tInsert NV:\tF°: {lastF}");
+                        StringLogging.AppendLine(
+                            $"{item.Nro}-{item.Instruction.Id}\tInsert NV:\tF°: {lastF}"
+                        );
                     }
                     else
                     {
-                        StringLogging.AppendLine($"{item.Instruction.Id}\tInsert NV:\tF°: {lastF}  *Change RUT {item.Instruction.ParticipantDebtor.Rut} by {item.Instruction.ParticipantNew.Rut}");
+                        StringLogging.AppendLine(
+                            $"{item.Instruction.Id}\tInsert NV:\tF°: {lastF}  *Change RUT {item.Instruction.ParticipantDebtor.Rut} by {item.Instruction.ParticipantNew.Rut}"
+                        );
                     }
                     folios.Add(lastF);
                 }
                 c++;
                 porcent = (float)(100 * c) / detalles.Count;
-                await ReportProgress(porcent, $"Inserting NV, wait please...   ({c}/{detalles.Count})  F°: {lastF})");
+                await ReportProgress(
+                    porcent,
+                    $"Inserting NV, wait please...   ({c}/{detalles.Count})  F°: {lastF})"
+                );
             }
             return folios;
         }
@@ -300,14 +352,16 @@ namespace Centralizador.Models.FunctionsApp
             FoliosNv = await InsertNv(detalles);
             if (FoliosNv != null && FoliosNv.Count > 0)
             {
-                string nameFile = $"{UserParticipant.Name}_InsertNv_{DateTime.Now:dd-MM-yyyy-HH-mm-ss}";
+                string nameFile =
+                    $"{UserParticipant.Name}_InsertNv_{DateTime.Now:dd-MM-yyyy-HH-mm-ss}";
                 StringLogging.AppendLine("");
                 StringLogging.AppendLine($"Summary: From {FoliosNv.Min()} To-{FoliosNv.Max()}");
                 SaveLogging(Path.GetTempPath(), nameFile);
             }
             else if (StringLogging.Length > 0)
             {
-                string nameFile = $"{UserParticipant.Name}_InsertNv_{DateTime.Now:dd-MM-yyyy-HH-mm-ss}";
+                string nameFile =
+                    $"{UserParticipant.Name}_InsertNv_{DateTime.Now:dd-MM-yyyy-HH-mm-ss}";
                 StringLogging.AppendLine("");
                 SaveLogging(Path.GetTempPath(), nameFile);
             }
@@ -329,139 +383,186 @@ namespace Centralizador.Models.FunctionsApp
             int c = 0;
             float porcent;
             List<Task<List<Detalle>>> tareas = new List<Task<List<Detalle>>>();
-            tareas = list.Select(async instruction =>
-            {
-                try
-                {
-                    //if (instruction.Id == 3281116)
-                    //{
-                    //    System.Windows.Forms.MessageBox.Show("Test");
-                    //}
+            tareas = list.Select(
+                    async instruction =>
+                    {
+                        try
+                        {
+                            //if (instruction.Id == 3281116)
+                            //{
+                            //    System.Windows.Forms.MessageBox.Show("Test");
+                            //}
 
-                    // GET PARTICIPANT DEBTOR
-                    instruction.ParticipantDebtor = await Participant.GetParticipantByIdAsync(instruction.Debtor);
-                    //REEMPLAZOS
-                    if (dic.ContainsKey(instruction.ParticipantDebtor.Id.ToString()))
-                    {
-                        instruction.ParticipantNew = await Participant.GetParticipantByIdAsync(dic[instruction.ParticipantDebtor.Id.ToString()]);
-                    }
-                    // ROOT CLASS.
-                    Detalle detalle = new Detalle(instruction.ParticipantDebtor.Rut, instruction.ParticipantDebtor.VerificationCode, instruction.ParticipantDebtor.BusinessName, instruction.Amount, instruction, true);
-                    // GET INFO OF INVOICES.
-                    List<DteInfoRef> dteInfos = await DteInfoRef.GetInfoRefAsync(instruction, Conn, "F");
-                    List<DteInfoRef> dteInfoRefs = new List<DteInfoRef>();
-                    if (dteInfos != null)
-                    {
-                        foreach (DteInfoRef item in dteInfos)
-                        {
-                            if (string.Compare(item.Glosa, instruction.PaymentMatrix.NaturalKey, StringComparison.OrdinalIgnoreCase) == 0)
+                            // GET PARTICIPANT DEBTOR
+                            instruction.ParticipantDebtor =
+                                await Participant.GetParticipantByIdAsync(instruction.Debtor);
+                            //REEMPLAZOS
+                            if (dic.ContainsKey(instruction.ParticipantDebtor.Id.ToString()))
                             {
-                                dteInfoRefs.Add(item);
+                                instruction.ParticipantNew =
+                                    await Participant.GetParticipantByIdAsync(
+                                        dic[instruction.ParticipantDebtor.Id.ToString()]
+                                    );
                             }
-                        }
-                        // ATTACH FILES.
-                        detalle.DteInfoRefs = dteInfoRefs;
-                        // ATTACH PRINCIPAL DOC.
-                        if (detalle.DteInfoRefs.Count >= 1)
-                        {
-                            infoLastF = detalle.DteInfoRefs.First(); // SHOW THE LAST DOC.
-                            if (dteInfoRefs.First().DteFiles != null)
+                            // ROOT CLASS.
+                            Detalle detalle = new Detalle(
+                                instruction.ParticipantDebtor.Rut,
+                                instruction.ParticipantDebtor.VerificationCode,
+                                instruction.ParticipantDebtor.BusinessName,
+                                instruction.Amount,
+                                instruction,
+                                true
+                            );
+                            // GET INFO OF INVOICES.
+                            List<DteInfoRef> dteInfos = await DteInfoRef.GetInfoRefAsync(
+                                instruction,
+                                Conn,
+                                "F"
+                            );
+                            List<DteInfoRef> dteInfoRefs = new List<DteInfoRef>();
+                            if (dteInfos != null)
                             {
-                                switch (detalle.DteInfoRefs.First().DteFiles.Count)
+                                foreach (DteInfoRef item in dteInfos)
                                 {
-                                    case 1:
-                                        if (infoLastF.DteFiles[0].TipoXML == null)
-                                        {
-                                            detalle.DTEDef = HSerialize.DTE_To_Object(infoLastF.DteFiles[0].Archivo);
-                                            detalle.DTEFile = infoLastF.DteFiles[0].Archivo;
-                                        }
-                                        break;
-
-                                    default:
-                                        {
-                                            detalle.DTEDef = HSerialize.DTE_To_Object(infoLastF.DteFiles.FirstOrDefault(x => x.TipoXML == "D").Archivo);
-                                            detalle.DTEFile = infoLastF.DteFiles.FirstOrDefault(x => x.TipoXML == "D").Archivo;
-                                            break;
-                                        }
+                                    if (
+                                        string.Compare(
+                                            item.Glosa,
+                                            instruction.PaymentMatrix.NaturalKey,
+                                            StringComparison.OrdinalIgnoreCase
+                                        ) == 0
+                                    )
+                                    {
+                                        dteInfoRefs.Add(item);
+                                    }
                                 }
-                            }
-                            detalle.DteInfoRefLast = infoLastF;
-                            detalle.NroInt = infoLastF.NroInt;
-                            detalle.FechaEmision = infoLastF.Fecha.ToString();
-                            detalle.Folio = infoLastF.Folio;
-                            detalle.MntNeto = infoLastF.NetoAfecto;
-                            detalle.MntIva = infoLastF.IVA;
-                            detalle.MntTotal = infoLastF.Total;
-                            // GET INFO FROM SII
-                            DataEvento evento = await dataEvento.GetStatusDteAsync("Creditor", TokenSii, "33", detalle, UserParticipant);
-                            if (evento != null)
-                            {
-                                detalle.DataEvento = evento;
-                                detalle.StatusDetalle = GetStatus(detalle);
-                                detalle.FechaRecepcion = infoLastF.FechaEnvioSII.ToString("dd-MM-yyyy");
+                                // ATTACH FILES.
+                                detalle.DteInfoRefs = dteInfoRefs;
+                                // ATTACH PRINCIPAL DOC.
+                                if (detalle.DteInfoRefs.Count >= 1)
+                                {
+                                    infoLastF = detalle.DteInfoRefs.First(); // SHOW THE LAST DOC.
+                                    if (dteInfoRefs.First().DteFiles != null)
+                                    {
+                                        switch (detalle.DteInfoRefs.First().DteFiles.Count)
+                                        {
+                                            case 1:
+                                                if (infoLastF.DteFiles[0].TipoXML == null)
+                                                {
+                                                    detalle.DTEDef = HSerialize.DTE_To_Object(
+                                                        infoLastF.DteFiles[0].Archivo
+                                                    );
+                                                    detalle.DTEFile = infoLastF.DteFiles[0].Archivo;
+                                                }
+                                                break;
+
+                                            default:
+                                            {
+                                                detalle.DTEDef = HSerialize.DTE_To_Object(
+                                                    infoLastF.DteFiles.FirstOrDefault(
+                                                        x => x.TipoXML == "D"
+                                                    ).Archivo
+                                                );
+                                                detalle.DTEFile =
+                                                    infoLastF.DteFiles.FirstOrDefault(
+                                                        x => x.TipoXML == "D"
+                                                    ).Archivo;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    detalle.DteInfoRefLast = infoLastF;
+                                    detalle.NroInt = infoLastF.NroInt;
+                                    detalle.FechaEmision = infoLastF.Fecha.ToString();
+                                    detalle.Folio = infoLastF.Folio;
+                                    detalle.MntNeto = infoLastF.NetoAfecto;
+                                    detalle.MntIva = infoLastF.IVA;
+                                    detalle.MntTotal = infoLastF.Total;
+                                    // GET INFO FROM SII
+                                    DataEvento evento = await dataEvento.GetStatusDteAsync(
+                                        "Creditor",
+                                        TokenSii,
+                                        "33",
+                                        detalle,
+                                        UserParticipant
+                                    );
+                                    if (evento != null)
+                                    {
+                                        detalle.DataEvento = evento;
+                                        detalle.StatusDetalle = GetStatus(detalle);
+                                        detalle.FechaRecepcion = infoLastF.FechaEnvioSII.ToString(
+                                            "dd-MM-yyyy"
+                                        );
+                                    }
+                                    else
+                                    {
+                                        detalle.StatusDetalle = GetStatus(detalle);
+                                        //detalle.FechaRecepcion = infoLastF.FechaEnvioSII.ToString("dd-MM-yyyy");
+                                    }
+                                }
+                                ////todo ESPECIAL PARA ELIMINAR EL DTE Y VOLVER A CARGARLO
+                                //if (detalle.StatusDetalle == StatusDetalle.Accepted && detalle.Instruction != null && (detalle.Instruction.StatusBilled == Instruction.StatusBilled.Facturado || detalle.Instruction.StatusBilled == Instruction.StatusBilled.ConRetraso))
+                                //{
+                                //    //! eliminar el DTE
+                                //    ResultDte dte = await Dte.GetDteAsync(detalle, true);
+                                //    if (dte != null)
+                                //    {
+                                //        ResultDte res = await Dte.DeleteDte(dte, TokenCen);
+
+                                //        detalle.Instruction.StatusBilled = Instruction.StatusBilled.NoFacturado;
+                                //    }
+                                //}
+
+                                // SEND DTE TO CEN.
+                                //if (detalle.StatusDetalle == StatusDetalle.Accepted && detalle.Instruction != null && detalle.Instruction.StatusBilled == Instruction.StatusBilled.NoFacturado)
+                                //{
+                                //    XmlDocument xmlDoc = new XmlDocument();
+                                //    xmlDoc.LoadXml(detalle.DTEFile);
+                                //    //xmlDoc.DocumentElement.SetAttribute("xmlns", "http://www.sii.cl/SiiDte");
+                                //    StringWriter sw = new StringWriter();
+                                //    XmlTextWriter xw = new XmlTextWriter(sw)
+                                //    {
+                                //        Formatting = Formatting.Indented
+                                //    };
+                                //    xmlDoc.WriteTo(xw);
+
+                                //    //XDocument xml = XDocument.Parse(detalle.DTEFile);
+                                //    //xml.docu.SetAttributeValue("","") ;
+
+                                //    // var root = xml.Root.Element("DTE").Attribute("").Value = "ssss";
+                                //    ResultDte resultDte = await Dte.SendDteCreditorAsync(detalle, TokenCen, sw.ToString());
+                                //    if (resultDte != null)
+                                //    {
+                                //        detalle.Instruction.Dte = resultDte;
+                                //        detalle.Instruction.StatusBilled = Instruction.StatusBilled.Facturado;
+                                //    }
+                                //}
+                                detalle.ValidatorFlag = new HFlagValidator(detalle, true);
                             }
                             else
                             {
-                                detalle.StatusDetalle = GetStatus(detalle);
-                                //detalle.FechaRecepcion = infoLastF.FechaEnvioSII.ToString("dd-MM-yyyy");
+                                detalle.ValidatorFlag = new HFlagValidator()
+                                {
+                                    Flag = LetterFlag.Clear
+                                };
                             }
+                            detalles.Add(detalle);
+                            c++;
+                            porcent = (float)(100 * c) / list.Count;
+                            await ReportProgress(
+                                porcent,
+                                $"Processing 'Pay Instructions' {instruction.Id}-{instruction.PaymentMatrix.PublishDate:dd-MM-yyyy}, wait please.  ({c}/{list.Count})"
+                            );
+                            return detalles;
                         }
-                        ////todo ESPECIAL PARA ELIMINAR EL DTE Y VOLVER A CARGARLO
-                        //if (detalle.StatusDetalle == StatusDetalle.Accepted && detalle.Instruction != null && (detalle.Instruction.StatusBilled == Instruction.StatusBilled.Facturado || detalle.Instruction.StatusBilled == Instruction.StatusBilled.ConRetraso))
-                        //{
-                        //    //! eliminar el DTE
-                        //    ResultDte dte = await Dte.GetDteAsync(detalle, true);
-                        //    if (dte != null)
-                        //    {
-                        //        ResultDte res = await Dte.DeleteDte(dte, TokenCen);
-
-                        //        detalle.Instruction.StatusBilled = Instruction.StatusBilled.NoFacturado;
-                        //    }
-                        //}
-
-                        // SEND DTE TO CEN.
-                        if (detalle.StatusDetalle == StatusDetalle.Accepted && detalle.Instruction != null && detalle.Instruction.StatusBilled == Instruction.StatusBilled.NoFacturado)
+                        catch (Exception ex)
                         {
-                            XmlDocument xmlDoc = new XmlDocument();
-                            xmlDoc.LoadXml(detalle.DTEFile);
-                            //xmlDoc.DocumentElement.SetAttribute("xmlns", "http://www.sii.cl/SiiDte");
-                            StringWriter sw = new StringWriter();
-                            XmlTextWriter xw = new XmlTextWriter(sw)
-                            {
-                                Formatting = Formatting.Indented
-                            };
-                            xmlDoc.WriteTo(xw);
-
-                            //XDocument xml = XDocument.Parse(detalle.DTEFile);
-                            //xml.docu.SetAttributeValue("","") ;
-
-                            // var root = xml.Root.Element("DTE").Attribute("").Value = "ssss";
-                            ResultDte resultDte = await Dte.SendDteCreditorAsync(detalle, TokenCen, sw.ToString());
-                            if (resultDte != null)
-                            {
-                                detalle.Instruction.Dte = resultDte;
-                                detalle.Instruction.StatusBilled = Instruction.StatusBilled.Facturado;
-                            }
+                            string msg = ex.Message;
+                            return null;
+                            throw;
                         }
-                        detalle.ValidatorFlag = new HFlagValidator(detalle, true);
                     }
-                    else
-                    {
-                        detalle.ValidatorFlag = new HFlagValidator() { Flag = LetterFlag.Clear };
-                    }
-                    detalles.Add(detalle);
-                    c++;
-                    porcent = (float)(100 * c) / list.Count;
-                    await ReportProgress(porcent, $"Processing 'Pay Instructions' {instruction.Id}-{instruction.PaymentMatrix.PublishDate:dd-MM-yyyy}, wait please.  ({c}/{list.Count})");
-                    return detalles;
-                }
-                catch (Exception ex)
-                {
-                    string msg = ex.Message;
-                    return null;
-                    throw;
-                }
-            }).ToList();
+                )
+                .ToList();
             await Task.WhenAll(tareas);
             return detalles.OrderBy(x => x.Instruction.Id).ToList();
         }
@@ -471,28 +572,39 @@ namespace Centralizador.Models.FunctionsApp
             await NotaVenta.DeleteNvAsync(Conn);
         }
 
-        public async Task<List<ResultInstruction>> GetInstructions(List<ResultPaymentMatrix> matrices)
+        public async Task<List<ResultInstruction>> GetInstructions(
+            List<ResultPaymentMatrix> matrices
+        )
         {
             List<ResultInstruction> instructions = new List<ResultInstruction>();
             List<Task<List<ResultInstruction>>> tareas = new List<Task<List<ResultInstruction>>>();
-            int c = 0; float porcent;
-            tareas = matrices.Select(async m =>
-            {
-                m.BillingWindow = await BillingWindow.GetBillingWindowByIdAsync(m);
-                List<ResultInstruction> listResult = await Instruction.GetInstructionCreditorAsync(m, UserParticipant);
-                if (listResult != null)
-                {
-                    // TESTER
-                    //if (m.Id != 1212121)
-                    //{
-                    instructions.AddRange(listResult);
-                    //}
-                }
-                c++;
-                porcent = (float)(100 * c) / matrices.Count;
-                await ReportProgress(porcent, $"Processing 'Pay Instructions Matrix' N° {m.Id}, wait please.  ({c}/{matrices.Count})");
-                return instructions;
-            }).ToList();
+            int c = 0;
+            float porcent;
+            tareas = matrices
+                .Select(
+                    async m =>
+                    {
+                        m.BillingWindow = await BillingWindow.GetBillingWindowByIdAsync(m);
+                        List<ResultInstruction> listResult =
+                            await Instruction.GetInstructionCreditorAsync(m, UserParticipant);
+                        if (listResult != null)
+                        {
+                            // TESTER
+                            //if (m.Id != 1212121)
+                            //{
+                            instructions.AddRange(listResult);
+                            //}
+                        }
+                        c++;
+                        porcent = (float)(100 * c) / matrices.Count;
+                        await ReportProgress(
+                            porcent,
+                            $"Processing 'Pay Instructions Matrix' N° {m.Id}, wait please.  ({c}/{matrices.Count})"
+                        );
+                        return instructions;
+                    }
+                )
+                .ToList();
             await Task.WhenAll(tareas);
             return instructions;
         }

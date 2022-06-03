@@ -188,7 +188,7 @@ namespace Centralizador.Models.Helpers
                     // Security Bank Txt
                     DataRow row = table.NewRow();
                     row["1"] = "2";
-                    row["2"] = item.RutReceptor; // Rut sin guión
+                    row["2"] = string.Concat(item.RutReceptor, item.DvReceptor); // Rut sin guión
                     row["3"] = ti.ToTitleCase(item.RznSocRecep.ToLower());  // Rzn Social
                     if (item.Instruction != null && item.Instruction.ParticipantCreditor != null)
                     {
